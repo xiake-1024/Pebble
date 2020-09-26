@@ -31,7 +31,7 @@ static void* ThreadEntry(void* arg) {
 }
 
 bool Thread::Start() {
-    if (::pthread_create(&m_thread_id, NULL, ThreadEntry, this) != 0) {
+    if (::pthread_create(&m_thread_id, NULL, ThreadEntry, this) != 0) {//系统函数，创建线程，得到线程id
         return false;
     }
 
@@ -39,7 +39,7 @@ bool Thread::Start() {
 }
 
 bool Thread::Join() {
-    return (::pthread_join(m_thread_id, NULL) == 0);
+    return (::pthread_join(m_thread_id, NULL) == 0);//等待线程执行结束
 }
 
 

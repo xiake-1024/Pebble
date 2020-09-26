@@ -96,7 +96,7 @@ private:
         int64_t task_id;
     };
 
-    class InnerThread : public Thread {
+    class InnerThread : public Thread {//线程池中内部线程对象
     public:
         InnerThread(BlockingQueue<Task>* pending_queue,
             BlockingQueue<int64_t>* finished_queue, BlockingQueue<int64_t>* working_queue);
@@ -111,7 +111,7 @@ private:
         bool m_waiting;
     };
 
-    std::vector<InnerThread*> m_threads;
+    std::vector<InnerThread*> m_threads;//线程容器
     BlockingQueue<Task> m_pending_queue;
     BlockingQueue<int64_t> m_finished_queue;
     BlockingQueue<int64_t> m_working_queue;

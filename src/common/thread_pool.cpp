@@ -29,15 +29,15 @@ ThreadPool::~ThreadPool() {
 }
 
 int ThreadPool::Init(int32_t thread_num, int32_t mode) {
-    if (m_initialized) {
+    if (m_initialized) {  //已经初始化
         return -1;
     }
 
-    if (thread_num <= 0) {
+    if (thread_num <= 0) { //线程个数错误
         return -2;
     }
 
-    if (thread_num > 256) {
+    if (thread_num > 256) { //线程个数不超过256
         thread_num = 256;
     }
     m_thread_num = thread_num;
@@ -48,10 +48,10 @@ int ThreadPool::Init(int32_t thread_num, int32_t mode) {
 
     for (int32_t i = 0; i < thread_num; i++) {
 
-        InnerThread* thread = new InnerThread(&m_pending_queue, &m_finished_queue, &m_working_queue);
+        InnerThread* thread = new InnerThread(&m_pending_queue, &m_finished_queue, &m_working_queue);//创建线程对象
         m_threads.push_back(thread);
 
-        thread->Start();
+        thread->Start();//启动线程
     }
 
     m_initialized = true;
@@ -126,12 +126,12 @@ ThreadPool::InnerThread::InnerThread(BlockingQueue<Task>* pending_queue,
 void ThreadPool::InnerThread::Run() {
     while (1) {
 
-        if (m_exit && ((!m_waiting) || (m_waiting && m_pending_queue->IsEmpty()))) {
+        if (m_exit && ((!m_waiting) || (m_waiting && m_pending_queue->IsEmpty()))) {//线程状态已经退出并且(状态无等待或者状态是pending为空)
             break;
         }
 
         Task t;
-        bool ret = m_pending_queue->TimedPopFront(&t, 1000);
+        bool ret = m_pending_queue->TimedPopFront(&t, 1000);//????
         if (ret) {
             m_working_queue->PushBack(0); // 不关心元素的值，只是通过队列size记录忙的线程数
             t.fun();
@@ -139,7 +139,7 @@ void ThreadPool::InnerThread::Run() {
                 m_finished_queue->PushBack(t.task_id);
             }
             int64_t tmp;
-            m_working_queue->TryPopBack(&tmp);
+            m_working_queue->TryPopBack(&tmp);  //？？
         }
     }
 }
